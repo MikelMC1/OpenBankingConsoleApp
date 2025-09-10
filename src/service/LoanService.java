@@ -1,0 +1,75 @@
+package service;
+
+import dto.Balance;
+import dto.Loan;
+import dto.User;
+import enums.AccountType;
+import enums.UserRole;
+import excpetion.AuthenticationException;
+import excpetion.InsufficientBalanceException;
+import excpetion.LoanNotFoundException;
+
+
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+public class LoanService {
+
+    private List<Loan> loans = new ArrayList<>(List.of(
+            new Loan(1L, 1L, new Date(), 5000, 500, 5000)
+
+    ));
+
+    public List<Loan> getAllLoans() throws AuthenticationException {
+
+
+        return loans.stream().toList();
+    }
+
+
+
+    public void  takeLoan(Loan loan) {
+        loans.add(loan);
+    }
+
+
+
+    public void printRemainingLoanByUserId(Long userId) throws AuthenticationException {
+        Loan loan = loans.stream()
+                .filter(b -> Objects.equals(b.getUserId(), userId))
+                .findAny()
+                .orElseThrow(() -> new AuthenticationException("User '" + userId + "' does not exist"));
+
+        System.out.println("User " + loan.getUserId() + " remaining to pay : " + loan.getRemainingLoanAmount());
+    }
+
+
+    public void makePayment(long loanId,double amount,BalanceService balanceService) throws LoanNotFoundException, InsufficientBalanceException, AuthenticationException {
+        Loan loan = loans.stream()
+                .filter(b -> Objects.equals(b.getUserId(), loanId))
+                .findAny()
+                .orElseThrow(() -> new LoanNotFoundException("Loan '" + loanId + "' does not exist"));
+
+        long userId = loan.getUserId();
+        double userBalance = balanceService.getBalanceByUserId(userId);
+
+        if (userBalance < amount) {
+            throw new InsufficientBalanceException("User '" + userId + "' has insufficient funds");
+        }
+
+        balanceService.withdrawMoney(userId,amount);
+        loan.setRemainingLoanAmount(loan.getRemainingLoanAmount() - amount);
+        loan.setNextPaymentDate(loan.addOneMonth(loan.getNextPaymentDate()));
+
+
+    }
+
+
+    }
+
+
+
+
