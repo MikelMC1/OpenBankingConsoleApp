@@ -1,5 +1,7 @@
 package dto;
 
+import service.LoanStatus;
+
 import java.util.Date;
 
 public class Loan {
@@ -17,14 +19,26 @@ public class Loan {
 
     private double remainingLoanAmount;
 
-    public Loan(long id, long userId, Date creationDate, double totalLoanAmount, double monthlyLoanAmount, double remainingLoanAmount) {
+    private int termYears   ;
+
+    private LoanStatus status;
+
+
+    public Loan(long id, long userId, Date creationDate, double totalLoanAmount, int termYears  ) {
         this.id = id;
         this.userId = userId;
         this.creationDate = creationDate;
-        this.nextPaymentDate = addOneMonth(creationDate); // +1 muaj
+        this.nextPaymentDate = addOneMonth(creationDate);
         this.totalLoanAmount = totalLoanAmount;
-        this.monthlyLoanAmount = monthlyLoanAmount;
-        this.remainingLoanAmount = remainingLoanAmount;
+        this.remainingLoanAmount = totalLoanAmount;
+        this.termYears = termYears;
+        this.monthlyLoanAmount = totalLoanAmount / (termYears * 12);
+        this.status = new LoanStatus(this);
+    }
+
+
+    public double getMonthlyLoanAmount() {
+        return totalLoanAmount / (termYears * 12); // convert years to months
     }
 
     public  Date addOneMonth(Date date) {
@@ -35,6 +49,14 @@ public class Loan {
     }
     public long getId() {
         return id;
+    }
+
+    public LoanStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(LoanStatus status) {
+        this.status = status;
     }
 
     public void setId(long id) {
@@ -69,9 +91,7 @@ public class Loan {
         this.totalLoanAmount = totalLoanAmount;
     }
 
-    public double getMonthlyLoanAmount() {
-        return monthlyLoanAmount;
-    }
+
 
     public void setMonthlyLoanAmount(double monthlyLoanAmount) {
         this.monthlyLoanAmount = monthlyLoanAmount;
@@ -89,6 +109,10 @@ public class Loan {
         this.nextPaymentDate = nextPaymentDate;
     }
 
+    public int getTermYears() { return termYears; }
+
+    public void setTermYears(int termYears) { this.termYears = termYears; }
+
     @Override
     public String toString() {
         return "Loan{" +
@@ -97,9 +121,11 @@ public class Loan {
                 ", creationDate=" + creationDate +
                 ", nextPaymentDate=" + nextPaymentDate +
                 ", totalLoanAmount=" + totalLoanAmount +
-                ", monthlyLoanAmount=" + monthlyLoanAmount +
+                ", monthlyLoanAmount=" + getMonthlyLoanAmount() +
                 ", remainingLoanAmount=" + remainingLoanAmount +
+                ", termYears=" + termYears + // changed
                 '}';
+
     }
 
 }

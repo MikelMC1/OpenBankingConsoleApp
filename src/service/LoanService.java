@@ -1,16 +1,10 @@
 package service;
 
-import dto.Balance;
+
 import dto.Loan;
-import dto.User;
-import enums.AccountType;
-import enums.UserRole;
 import excpetion.AuthenticationException;
 import excpetion.InsufficientBalanceException;
 import excpetion.LoanNotFoundException;
-
-
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,16 +13,17 @@ import java.util.Objects;
 public class LoanService {
 
     private List<Loan> loans = new ArrayList<>(List.of(
-            new Loan(1L, 1L, new Date(), 5000, 500, 5000)
+            new Loan(1L,1L,new Date(),500,1)
 
     ));
+
+
 
     public List<Loan> getAllLoans()  {
 
 
         return loans.stream().toList();
     }
-
 
 
     public void  takeLoan(Loan loan) {
@@ -61,24 +56,40 @@ public class LoanService {
             balanceService.withdrawMoney(userId,amount);
             loan.setRemainingLoanAmount(loan.getRemainingLoanAmount() - amount);
 
-            //statusi  eshte akoma unpaid
-        }
-        else if (userBalance < 1) {
-
-            throw new InsufficientBalanceException("Insufficient balance");
-
-            //statusi do te jete prape  unpaid
         }
         else {
             balanceService.withdrawMoney(userId,amount);
             loan.setRemainingLoanAmount(loan.getRemainingLoanAmount() - amount);
             loan.setNextPaymentDate(loan.addOneMonth(loan.getNextPaymentDate()));
 
-
-            // statusi do te jete paid
         }
 
+        loan.getStatus().setLoanStatus(loan.getRemainingLoanAmount() > 0);
+
     }
+
+    public void deleteLoan(long loanId) throws LoanNotFoundException {
+        Loan loan = loans.stream()
+                .filter(b -> Objects.equals(b.getId(), loanId))
+                .findAny()
+                .orElseThrow(() -> new LoanNotFoundException("User '" + loanId + "' does not exist"));
+
+        loans.remove(loan);
+        System.out.println("Loan with ID " + loanId + " has been deleted.");
+
+        // kjo ben delete  edhe kur loan mundet te jete aktive per cfare do lloj arsye qe do te na duhet ne te ardhmen
+
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
