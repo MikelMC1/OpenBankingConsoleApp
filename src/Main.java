@@ -1,10 +1,9 @@
-import dto.Balance;
 import dto.Loan;
-import enums.UserRole;
 import excpetion.AuthenticationException;
 import excpetion.InsufficientBalanceException;
 import excpetion.LoanNotFoundException;
 import service.LoanService;
+import service.TransactionsService;
 import service.UserService;
 import service.BalanceService;
 
@@ -15,17 +14,36 @@ public class Main {
     public static void main(String[] args) throws AuthenticationException, InsufficientBalanceException, LoanNotFoundException {
         UserService userService = new UserService();
 
+
         LoanService loanService = new LoanService();
         System.out.println((loanService.getAllLoans()));
 
         BalanceService balanceService = new BalanceService();
 
-        loanService.takeLoan(new Loan(2L,2L,new Date(),5020,510,5020));
-        System.out.println((loanService.getAllLoans()));
+        TransactionsService transactionsService = new TransactionsService(balanceService);
 
-        loanService.makePayment(1,200,balanceService);
+        transactionsService.makeTransfer(1L,2L,300);
 
-        loanService.printRemainingLoanByUserId(1L);
+        balanceService.printBalanceByUserId(1L);
+        balanceService.printBalanceByUserId(2L);
+
+
+        transactionsService.printTransactionByTransactionId(1L);
+
+        transactionsService.chargeBack(1L);
+
+        transactionsService.printTransactionByTransactionId(2L);
+
+        balanceService.printBalanceByUserId(1L);
+        balanceService.printBalanceByUserId(2L);
+
+
+
+
+
+
+
+
 
 
 

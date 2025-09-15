@@ -8,7 +8,7 @@ public class User {
     private String username;
     private String password;
 
-    //add in constructor and getter setter
+
     private UserRole role;
 
 

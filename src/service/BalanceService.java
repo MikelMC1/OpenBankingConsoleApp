@@ -1,26 +1,18 @@
 package service;
 
 import dto.Balance;
-import dto.User;
 import enums.AccountType;
-import enums.UserRole;
-
 import excpetion.AuthenticationException;
 import excpetion.InsufficientBalanceException;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class BalanceService {
 
-
-    private List<Balance> balances = List.of(
+    private List<Balance> balances = new ArrayList<>(List.of(
             new Balance(AccountType.DEBIT, 1L, new Date(), 500),
             new Balance(AccountType.CREDIT, 2L, new Date(), 0)
+    ));
 
-    );
 
 
     public void printBalanceByUserId(Long userId) throws AuthenticationException {

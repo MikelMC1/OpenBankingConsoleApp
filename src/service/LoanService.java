@@ -1,16 +1,10 @@
 package service;
 
-import dto.Balance;
+
 import dto.Loan;
-import dto.User;
-import enums.AccountType;
-import enums.UserRole;
 import excpetion.AuthenticationException;
 import excpetion.InsufficientBalanceException;
 import excpetion.LoanNotFoundException;
-
-
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,12 +25,12 @@ public class LoanService {
         return cal.getTime();
     }
 
+
     public List<Loan> getAllLoans()  {
 
 
         return loans;
     }
-
 
 
     public void  takeLoan(Loan loan) {
@@ -69,25 +63,29 @@ public class LoanService {
             balanceService.withdrawMoney(userId,amount);
             loan.setRemainingLoanAmount(loan.getRemainingLoanAmount() - amount);
 
-            //statusi  eshte akoma unpaid
-        }
-        else if (userBalance < 1) {
-
-            throw new InsufficientBalanceException("Insufficient balance");
-
-            //statusi do te jete prape  unpaid
         }
         else {
             balanceService.withdrawMoney(userId,amount);
             loan.setRemainingLoanAmount(loan.getRemainingLoanAmount() - amount);
             loan.setNextPaymentDate(addOneMonth(loan.getNextPaymentDate()));
 
-
-            // statusi do te jete paid
         }
+
+        loan.getStatus().setLoanStatus(loan.getRemainingLoanAmount() > 0);
 
     }
 
+    public void deleteLoan(long loanId) throws LoanNotFoundException {
+        Loan loan = loans.stream()
+                .filter(b -> Objects.equals(b.getId(), loanId))
+                .findAny()
+                .orElseThrow(() -> new LoanNotFoundException("User '" + loanId + "' does not exist"));
+
+        loans.remove(loan);
+        System.out.println("Loan with ID " + loanId + " has been deleted.");
+
+       
+    }
 
 
     }
