@@ -17,22 +17,17 @@ public class Loan {
 
     private double remainingLoanAmount;
 
-    public Loan(long id, long userId, Date creationDate, double totalLoanAmount, double monthlyLoanAmount, double remainingLoanAmount) {
+    public Loan(long id, long userId, Date creationDate,Date nextPaymentDate, double totalLoanAmount, double monthlyLoanAmount, double remainingLoanAmount) {
         this.id = id;
         this.userId = userId;
         this.creationDate = creationDate;
-        this.nextPaymentDate = addOneMonth(creationDate); // +1 muaj
+        this.nextPaymentDate = nextPaymentDate;
         this.totalLoanAmount = totalLoanAmount;
         this.monthlyLoanAmount = monthlyLoanAmount;
         this.remainingLoanAmount = remainingLoanAmount;
     }
 
-    public  Date addOneMonth(Date date) {
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(java.util.Calendar.MONTH, 1);
-        return cal.getTime();
-    }
+
     public long getId() {
         return id;
     }
