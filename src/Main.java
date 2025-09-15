@@ -6,6 +6,7 @@ import service.LoanService;
 import service.TransactionsService;
 import service.UserService;
 import service.BalanceService;
+import service.StatisticsService;
 
 import java.util.Date;
 
@@ -28,14 +29,32 @@ public class Main {
         balanceService.printBalanceByUserId(2L);
 
 
-        transactionsService.printTransactionByTransactionId(1L);
+        //transactionsService.printTransactionByTransactionId(1L);
 
         transactionsService.chargeBack(1L);
 
-        transactionsService.printTransactionByTransactionId(2L);
+       // transactionsService.printTransactionByTransactionId(2L);
 
-        balanceService.printBalanceByUserId(1L);
-        balanceService.printBalanceByUserId(2L);
+        //balanceService.printBalanceByUserId(1L);
+       // balanceService.printBalanceByUserId(2L);
+
+
+
+        transactionsService.withdrawMoney(1L,500);
+        //balanceService.printBalanceByUserId(1L);
+        //transactionsService.printTransactionByTransactionId(3L);
+
+
+        StatisticsService statisticsService = new StatisticsService(transactionsService);
+
+
+        //System.out.print(transactionsService.getTransactions());
+
+
+
+
+
+    System.out.println(statisticsService.getTransactionsTranscript(1L));
 
 
 
