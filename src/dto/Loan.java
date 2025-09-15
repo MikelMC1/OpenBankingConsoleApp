@@ -19,16 +19,16 @@ public class Loan {
 
     private double remainingLoanAmount;
 
+
     private int termYears   ;
 
     private LoanStatus status;
 
-
-    public Loan(long id, long userId, Date creationDate, double totalLoanAmount, int termYears  ) {
+    public Loan(long id, long userId, Date creationDate,Date nextPaymentDate, double totalLoanAmount, double monthlyLoanAmount, double remainingLoanAmount) {
         this.id = id;
         this.userId = userId;
         this.creationDate = creationDate;
-        this.nextPaymentDate = addOneMonth(creationDate);
+        this.nextPaymentDate = nextPaymentDate;
         this.totalLoanAmount = totalLoanAmount;
         this.remainingLoanAmount = totalLoanAmount;
         this.termYears = termYears;
@@ -38,15 +38,10 @@ public class Loan {
 
 
     public double getMonthlyLoanAmount() {
-        return totalLoanAmount / (termYears * 12); // convert years to months
+        return totalLoanAmount / (termYears * 12); 
     }
 
-    public  Date addOneMonth(Date date) {
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(java.util.Calendar.MONTH, 1);
-        return cal.getTime();
-    }
+
     public long getId() {
         return id;
     }
