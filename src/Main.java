@@ -3,6 +3,7 @@ import excpetion.AuthenticationException;
 import excpetion.InsufficientBalanceException;
 import excpetion.LoanNotFoundException;
 import service.LoanService;
+import service.TransactionsService;
 import service.UserService;
 import service.BalanceService;
 
@@ -19,19 +20,27 @@ public class Main {
 
         BalanceService balanceService = new BalanceService();
 
-        loanService.takeLoan(new Loan(2L,2L,new Date(),6000,2));
+        TransactionsService transactionsService = new TransactionsService(balanceService);
+
+        transactionsService.makeTransfer(1L,2L,300);
+
+        balanceService.printBalanceByUserId(1L);
+        balanceService.printBalanceByUserId(2L);
+
+
+        transactionsService.printTransactionByTransactionId(1L);
+
+        transactionsService.chargeBack(1L);
+
+        transactionsService.printTransactionByTransactionId(2L);
+
+        balanceService.printBalanceByUserId(1L);
+        balanceService.printBalanceByUserId(2L);
 
 
 
-        loanService.printRemainingLoanByLoanId(1L);
-
-        System.out.println((loanService.getAllLoans()));
-
-        loanService.deleteLoan(2L);
 
 
-
-        System.out.println((loanService.getAllLoans()));
 
 
 
