@@ -25,7 +25,7 @@ public class BalanceService {
     }
 
 
-    public void withdrawMoney(long userId, double amount) throws InsufficientBalanceException, AuthenticationException {
+    public void removeMoney(long userId, double amount) throws InsufficientBalanceException, AuthenticationException {
 
         Balance balance = balances.stream()
                 .filter(b -> Objects.equals(b.getUserId(), userId))
@@ -41,7 +41,7 @@ public class BalanceService {
     }
 
 
-    public void depositMoney(long userId, double amount) throws AuthenticationException {
+    public void addMoney(long userId, double amount) throws AuthenticationException {
         Balance balance = balances.stream()
                 .filter(b -> Objects.equals(b.getUserId(), userId))
                 .findFirst()
