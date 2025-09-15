@@ -67,4 +67,16 @@ public class UserService {
 
             return users.stream().toList();
     }
+
+
+    //TODO
+    public void addUser(User user) {
+        users.add(user);
+    }
+
+    public void removeUser(User user) {
+        users.remove(user);
+    }
+
+
 }
