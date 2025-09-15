@@ -19,14 +19,22 @@ import java.util.Objects;
 public class LoanService {
 
     private List<Loan> loans = new ArrayList<>(List.of(
-            new Loan(1L, 1L, new Date(), 5000, 500, 5000)
+            new Loan(1L, 1L, new Date(),addOneMonth(new Date()), 5000,500,5000)
 
     ));
+
+
+    public  Date addOneMonth(Date date) {
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(java.util.Calendar.MONTH, 1);
+        return cal.getTime();
+    }
 
     public List<Loan> getAllLoans()  {
 
 
-        return loans.stream().toList();
+        return loans;
     }
 
 
@@ -72,7 +80,7 @@ public class LoanService {
         else {
             balanceService.withdrawMoney(userId,amount);
             loan.setRemainingLoanAmount(loan.getRemainingLoanAmount() - amount);
-            loan.setNextPaymentDate(loan.addOneMonth(loan.getNextPaymentDate()));
+            loan.setNextPaymentDate(addOneMonth(loan.getNextPaymentDate()));
 
 
             // statusi do te jete paid
