@@ -1,4 +1,6 @@
 import dto.Loan;
+import dto.User;
+import enums.UserRole;
 import excpetion.AuthenticationException;
 import excpetion.InsufficientBalanceException;
 import excpetion.LoanNotFoundException;
@@ -55,6 +57,18 @@ public class Main {
 
 
     System.out.println(statisticsService.getTransactionsTranscript(1L));
+
+
+
+
+    userService.addUser("Toni","12344",new User(15L,"Antonio","12344",UserRole.SIMPLE_USER));
+
+    System.out.println(userService.getAllUsers("Mikel","1234",UserRole.BRANCH_MANAGER));
+
+    userService.removeUser("Toni","12344",15L);
+
+    System.out.println(userService.getAllUsers("Mikel","1234",UserRole.BRANCH_MANAGER));
+
 
 
 
