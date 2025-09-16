@@ -1,13 +1,11 @@
 package service;
 
+
 import dto.User;
 import enums.UserRole;
 import excpetion.AuthenticationException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class UserService {
 
@@ -16,10 +14,11 @@ public class UserService {
     //how to throw expections with optionals
 
 
-    private List<User> users = List.of(
+    private List<User> users =  new ArrayList<>(List.of(
             new User(1L, "Mikel", "1234", UserRole.BRANCH_MANAGER),
-            new User(2L, "John", "123444", UserRole.SIMPLE_USER)
-    );
+            new User(2L, "John", "123444", UserRole.SIMPLE_USER),
+            new User(3L, "Toni", "12344", UserRole.ADMIN)
+    ));
 
     // new: map to store balances for users  check
 
@@ -46,7 +45,7 @@ public class UserService {
 
 
 
-    // reminder always send user params username password and role as paramaters
+
     public List<User> getAllUsers(String username,String password,UserRole userRole) throws AuthenticationException {
 
 
@@ -68,14 +67,48 @@ public class UserService {
             return users.stream().toList();
     }
 
+    public void addUser(String username, String password, User userToAdd) throws AuthenticationException {
 
-    //TODO
-    public void addUser(User user) {
-        users.add(user);
+
+        User actingUser = users.stream()
+                .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))
+                .findFirst()
+                .orElseThrow(() -> new AuthenticationException("User '" + username + "' does not exist or is not authenticated"));
+
+        if (actingUser.getRole() != UserRole.ADMIN) {
+            throw new AuthenticationException("User '" + username + "' is not an ADMIN");
+        }
+
+
+        boolean userExists = users.stream()
+                .anyMatch(u -> u.getUsername().equals(userToAdd.getUsername()) || Objects.equals(u.getUserId(), userToAdd.getUserId()));
+
+        if (userExists) {
+            throw new AuthenticationException("User '" + userToAdd.getUsername() + "' is already registered");
+        }
+
+
+        users.add(userToAdd);
     }
 
-    public void removeUser(User user) {
+    public void removeUser(String username, String password,long userId) throws AuthenticationException {
+        User actingUser = users.stream()
+                .filter(u->u.getUsername().equals(username) && u.getPassword().equals(password))
+                .findFirst()
+                .orElseThrow(() -> new AuthenticationException("User '" + username + "' does not exist"));
+
+        if (actingUser.getRole() != UserRole.ADMIN) {
+            throw new AuthenticationException("User '" + username + "' is not an ADMIN");
+        }
+
+
+        User user = users.stream()
+                .filter(b -> Objects.equals(b.getUserId(), userId))
+                .findAny()
+                .orElseThrow(() -> new AuthenticationException("User '" + userId + "' does not exist or has been recently removed"));
+
         users.remove(user);
+
     }
 
 
