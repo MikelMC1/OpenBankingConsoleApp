@@ -60,12 +60,12 @@ public class LoanService {
 
         if (userBalance < amount) {
 
-            balanceService.withdrawMoney(userId,amount);
+            balanceService.removeMoney(userId,amount);
             loan.setRemainingLoanAmount(loan.getRemainingLoanAmount() - amount);
 
         }
         else {
-            balanceService.withdrawMoney(userId,amount);
+            balanceService.removeMoney(userId,amount);
             loan.setRemainingLoanAmount(loan.getRemainingLoanAmount() - amount);
             loan.setNextPaymentDate(addOneMonth(loan.getNextPaymentDate()));
 

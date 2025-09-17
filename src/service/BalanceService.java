@@ -10,9 +10,16 @@ public class BalanceService {
 
     private List<Balance> balances = new ArrayList<>(List.of(
             new Balance(AccountType.DEBIT, 1L, new Date(), 500),
-            new Balance(AccountType.CREDIT, 2L, new Date(), 0)
+            new Balance(AccountType.CREDIT, 2L, new Date(), 0),
+            new Balance(AccountType.DEBIT, 3L, new Date(), 500)
     ));
 
+
+
+    public void createBalanceForUser(Long userId) {
+
+        balances.add(new Balance(AccountType.DEBIT, userId, new Date(), 0));
+    }
 
 
     public void printBalanceByUserId(Long userId) throws AuthenticationException {
@@ -25,7 +32,7 @@ public class BalanceService {
     }
 
 
-    public void withdrawMoney(long userId, double amount) throws InsufficientBalanceException, AuthenticationException {
+    public void removeMoney(long userId, double amount) throws InsufficientBalanceException, AuthenticationException {
 
         Balance balance = balances.stream()
                 .filter(b -> Objects.equals(b.getUserId(), userId))
@@ -41,7 +48,7 @@ public class BalanceService {
     }
 
 
-    public void depositMoney(long userId, double amount) throws AuthenticationException {
+    public void addMoney(long userId, double amount) throws AuthenticationException {
         Balance balance = balances.stream()
                 .filter(b -> Objects.equals(b.getUserId(), userId))
                 .findFirst()

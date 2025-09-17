@@ -1,12 +1,10 @@
 package service;
 
-import dto.Loan;
 import dto.Transaction;
 import enums.TransactionStatus;
 import enums.TransactionType;
 import excpetion.AuthenticationException;
 import excpetion.InsufficientBalanceException;
-import excpetion.LoanNotFoundException;
 import excpetion.TransactionNotFoundException;
 
 import java.util.ArrayList;
@@ -37,9 +35,9 @@ public class TransactionsService {
     public void makeTransfer(long fromUserId, long toUserId, double amount)
             throws AuthenticationException, InsufficientBalanceException {
 
-        balanceService.withdrawMoney(fromUserId, amount);
+        balanceService.removeMoney(fromUserId, amount);
 
-        balanceService.depositMoney(toUserId, amount);
+        balanceService.addMoney(toUserId, amount);
 
         long transactionId = getNextTransactionId();
 
@@ -84,9 +82,9 @@ public class TransactionsService {
         long toUserId = transaction.getToUserId();
         double amount = transaction.getAmount();
 
-        balanceService.withdrawMoney(toUserId, amount);
+        balanceService.removeMoney(toUserId, amount);
 
-        balanceService.depositMoney(fromUserId, amount);
+        balanceService.addMoney(fromUserId, amount);
 
 
         long newTransactionId = getNextTransactionId();
@@ -102,16 +100,59 @@ public class TransactionsService {
         transactions.add(chargebackTransaction);
 
 
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
 
 
+    public void withdrawMoney(long  userId, double amount) throws AuthenticationException, InsufficientBalanceException {
+
+        balanceService.removeMoney(userId,amount);
+        long transactionId = getNextTransactionId();
+
+
+
+        Transaction transaction = new Transaction(
+                transactionId,
+                new Date(),
+                TransactionStatus.APPROVED,
+                TransactionType.WITHDRAW,
+                userId,
+                null,
+                amount
+        );
+
+        transactions.add(transaction);
 
 
     }
 
-    //TODO
-    public void getTransactions() {
 
 
+    public void depositMoney(long  userId, double amount) throws AuthenticationException {
+
+
+        balanceService.addMoney(userId,amount);
+        long transactionId = getNextTransactionId();
+
+
+
+        Transaction transaction = new Transaction(
+                transactionId,
+                new Date(),
+                TransactionStatus.APPROVED,
+                TransactionType.DEPOSIT,
+                userId,
+                null,
+                amount
+        );
+
+        transactions.add(transaction);
 
     }
+
+
+
 }

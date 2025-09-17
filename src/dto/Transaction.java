@@ -17,12 +17,12 @@ public class Transaction {
 
     private long fromUserId;
 
-    private long toUserId;
+    private  Long toUserId;
 
 
     private double amount;
 
-    public Transaction(long transactionId, Date date, TransactionStatus status, TransactionType type, long fromUserId, long toUserId, double amount) {
+    public Transaction(long transactionId, Date date, TransactionStatus status, TransactionType type, long fromUserId, Long toUserId, double amount) {
         this.transactionId = transactionId;
         this.date = date;
         this.status = status;
