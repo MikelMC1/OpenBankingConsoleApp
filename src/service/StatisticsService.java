@@ -1,15 +1,10 @@
 package service;
-
-import dto.Balance;
 import dto.Transaction;
-import dto.User;
-import excpetion.AuthenticationException;
 import excpetion.TransactionNotFoundException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.List;
+
 
 
 public class StatisticsService {
@@ -25,7 +20,7 @@ public class StatisticsService {
 
     public List<Transaction> getTransactionsTranscript(long userId) throws TransactionNotFoundException {
         List<Transaction> result = transactionsService.getTransactions().stream()
-                .filter(t -> t.getFromUserId() == userId) // only sender
+                .filter(t -> t.getFromUserId() == userId)
                 .toList();
 
         if (result.isEmpty()) {
@@ -33,6 +28,46 @@ public class StatisticsService {
         }
 
         return result;
+    }
+
+
+    //TODO
+    public Map<Long, Integer> getMostActiveUsers() throws TransactionNotFoundException {
+        List<Transaction> transactions = transactionsService.getTransactions();
+
+        if (transactions.isEmpty()) {
+            throw new TransactionNotFoundException("No transactions found in the system.");
+        }
+
+        Map<Long, Integer> activity = new HashMap<>();
+        for (Transaction transaction : transactions) {
+            activity.put(transaction.getFromUserId(),activity.getOrDefault(transaction.getFromUserId(),0)+1);
+
+        }
+
+
+
+        return activity.entrySet()
+                .stream()
+                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                .limit(10)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+    }
+
+
+
+
+
+
+
+
+
+
     }
 
 
@@ -49,4 +84,8 @@ public class StatisticsService {
 
 
 
-}
+
+
+
+
+
