@@ -9,9 +9,6 @@ import java.util.*;
 
 public class UserService {
 
-    //refactor to list of users and also refactor the methods affected
-    //what map does in stream java
-    //how to throw expections with optionals
 
 
     private List<User> users =  new ArrayList<>(List.of(
@@ -20,18 +17,12 @@ public class UserService {
             new User(3L, "Toni", "12344", UserRole.ADMIN)
     ));
 
-    // new: map to store balances for users  check
+    private BalanceService balanceService;
 
+    public UserService(BalanceService balanceService) {
+        this.balanceService = balanceService;
+    }
 
-    // constructor to initialize sample balances  check
-
-
-
-    //create a method that gives back for a specific user the current amount of money  check
-
-    //1. create a different class called balance and connect it with a user (String accountType, Long userId, Date creationDate)  check
-    //2. create the method that retrieves back the balance
-    //3. check if the user exists and has balance and is bigger then 0.
 
 
 
@@ -41,9 +32,6 @@ public class UserService {
                 .anyMatch(user -> user.getUsername().equals(username)
                         && user.getPassword().equals(password));
     }
-
-
-
 
 
     public List<User> getAllUsers(String username,String password,UserRole userRole) throws AuthenticationException {
@@ -89,6 +77,8 @@ public class UserService {
 
 
         users.add(userToAdd);
+
+        balanceService.createBalanceForUser(userToAdd.getUserId());
     }
 
     public void removeUser(String username, String password,long userId) throws AuthenticationException {
